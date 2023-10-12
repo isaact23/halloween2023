@@ -48,7 +48,7 @@ class Game:
   
   # Switch modes if people are approaching or near
   def _checkForPeople(self):
-    if self._connection.isPersonClose():
+    if self.getMode() != Mode.SCARE and self._connection.isPersonClose():
       self.setMode(Mode.SCARE)
 
     elif self.getMode() != Mode.WELCOME and self._connection.isPersonApproaching():
