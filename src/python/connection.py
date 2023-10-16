@@ -10,7 +10,9 @@ class Connection:
   def __init__(self):
     self._port = None
     self._connected = False
-    self._connect()
+    self._ensureConnected()
+    if not self._connected:
+      print("Failed to connect to serial.")
   
   # Return whether a person is approaching.
   def isPersonApproaching(self):
@@ -42,9 +44,14 @@ class Connection:
 
     binMsg = message.encode('ascii')
     if self._connected:
-      self._port.write(binMsg)
+      try:
+        self._port.write(binMsg)
+      except serial.serialutil.SerialException:
+        print("Failed to write message to serial. Disconnected.")
+        self._connected = False
     else:
-      print("Connection not initialized. Tried to send " + message)
+      pass
+      #print("Connection not initialized. Tried to send " + message)
 
   # Return the next incoming line from serial, or None if there is none.
   def _readMessage(self):
@@ -54,20 +61,21 @@ class Connection:
       try:
         if self._port.in_waiting > 0:
           return self._port.readline().decode("Ascii")
+
       except serial.serialutil.SerialException:
-        print("Failed to read message.")
+        print("Failed to read message from serial. Disconnected.")
         self._connected = False
-        return None
 
     else:
-      print("Connection not initialized. Cannot read message.")
+      #print("Connection not initialized. Cannot read message.")
+      pass
     
     return None
   
   # Try to connect to serial.
   def _connect(self):
     if self._connected:
-      print("Already connected.")
+      #print("Already connected.")
       return
 
     try:
@@ -75,7 +83,7 @@ class Connection:
       self._connected = True
 
     except serial.serialutil.SerialException:
-      print("Failed to open serial.")
+      #print("Failed to open serial.")
       self._port = None
       self._connected = False
   
@@ -83,3 +91,5 @@ class Connection:
   def _ensureConnected(self):
     if not self._connected:
       self._connect()
+      if self._connected:
+        print("Connected to serial.")
