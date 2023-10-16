@@ -5,8 +5,7 @@ from settings import *
 
 # Python library
 from enum import Enum
-import time
-import keyboard
+import keyboard, os, time
 
 # Logic controller / mode manager for the Halloween 2023 project
 class Game:
@@ -22,6 +21,8 @@ class Game:
   
   # Set the prorgam mode
   def setMode(self, mode):
+    for i in range(2):
+      print("")
     print("Switching to " + str(mode))
 
     self._mode = mode
@@ -55,7 +56,7 @@ class Game:
         self._runWelcome()
       case Mode.SCARE:
         self._runScare()
-  
+
   # Read the keyboard and switch modes accordingly.
   def _readKeyboard(self):
     if keyboard.is_pressed(IDLE_KEY) and self._mode != Mode.IDLE:
