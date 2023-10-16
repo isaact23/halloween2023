@@ -65,6 +65,9 @@ class Connection:
       except serial.serialutil.SerialException:
         print("Failed to read message from serial. Disconnected.")
         self._connected = False
+      
+      except UnicodeDecodeError:
+        print("Failed to decode message from serial.")
 
     else:
       #print("Connection not initialized. Cannot read message.")

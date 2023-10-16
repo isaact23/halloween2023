@@ -22,7 +22,7 @@ painlessMesh  mesh;
 void sendPCToMesh();
 
 Task taskPCToMesh(
-  100,  // Interval in milliseconds
+  1,  // Interval in milliseconds
   TASK_FOREVER,     // Number of times to execute task
   &sendPCToMesh      // Callback
 );

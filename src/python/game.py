@@ -1,9 +1,12 @@
+# User modules
 from modes import Mode
 from connection import Connection
 from settings import *
 
+# Python library
 from enum import Enum
 import time
+import keyboard
 
 # Logic controller / mode manager for the Halloween 2023 project
 class Game:
@@ -35,22 +38,40 @@ class Game:
   
   # Run program loop
   def run(self):
+
     while True:
-      match self._mode:
-        case Mode.IDLE:
-          self._runIdle()
-        case Mode.ATTRACT:
-          self._runAttract()
-        case Mode.WELCOME:
-          self._runWelcome()
-        case Mode.SCARE:
-          self._runScare()
-      
-      # Read messages from serial.
-      incomingMessage = self._connection.readMessage()
-      if incomingMessage != None:
-        pass
-        #print("Incoming message: " + incomingMessage, end="")
+      self._runMode()
+      self._readKeyboard()
+      self._readFromSerial()
+  
+  # Run loop code specific to a mode
+  def _runMode(mode):
+    match mode:
+      case Mode.IDLE:
+        self._runIdle()
+      case Mode.ATTRACT:
+        self._runAttract()
+      case Mode.WELCOME:
+        self._runWelcome()
+      case Mode.SCARE:
+        self._runScare()
+  
+  # Read the keyboard and switch modes accordingly.
+  def _readKeyboard(self):
+    if keyboard.is_pressed(IDLE_KEY) and self._mode != Mode.IDLE:
+      self.setMode(Mode.IDLE)
+    elif keyboard.is_pressed(ATTRACT_KEY) and self._mode != Mode.ATTRACT:
+      self.setMode(Mode.ATTRACT)
+    elif keyboard.is_pressed(WELCOME_KEY) and self._mode != Mode.WELCOME:
+      self.setMode(Mode.WELCOME)
+    elif keyboard.is_pressed(SCARE_KEY) and self._mode != Mode.SCARE:
+      self.setMode(Mode.SCARE)
+  
+  # Read from serial.
+  def _readFromSerial(self):
+    incomingMessage = self._connection.readMessage()
+    if incomingMessage != None:
+      print("Incoming message: " + incomingMessage, end="")
   
   # Switch modes if people are approaching or near
   def _checkForPeople(self):
@@ -59,7 +80,6 @@ class Game:
 
     elif self.getMode() != Mode.WELCOME and self._connection.isPersonApproaching():
       self.setMode(Mode.WELCOME)
-
   
   # Run idle mode
   def _runIdle(self):
