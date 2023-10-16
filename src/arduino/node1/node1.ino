@@ -19,20 +19,22 @@ Scheduler userScheduler; // to control your personal task
 painlessMesh  mesh;
 
 // User stub
-void sendMessage() ; // Prototype so PlatformIO doesn't complain
+void sendPCToMesh();
 
-// Prototype at https://github.com/arkhipenko/TaskScheduler/wiki/Full-Document
-Task taskSendMessage(
-  TASK_SECOND * 1,  // Interval in milliseconds
+Task taskPCToMesh(
+  100,  // Interval in milliseconds
   TASK_FOREVER,     // Number of times to execute task
-  &sendMessage      // Callback
+  &sendPCToMesh      // Callback
 );
 
-void sendMessage() {
-  String msg = "Hi from node1";
-  msg += mesh.getNodeId();
-  mesh.sendBroadcast( msg );
-  taskSendMessage.setInterval( random( TASK_SECOND * 1, TASK_SECOND * 5 ));
+void sendPCToMesh() {
+  if (Serial.available()) {
+    String str = Serial.readString();
+    str.trim();
+    Serial.printf("Message from computer to node 1 - %s\n", str);
+    mesh.sendBroadcast(str);
+  }
+  //mesh.sendBroadcast("Check-in from messenger");
 }
 
 // Needed for painless library
@@ -41,7 +43,7 @@ void receivedCallback( uint32_t from, String &msg ) {
 }
 
 void newConnectionCallback(uint32_t nodeId) {
-    Serial.printf("--> startHere: New Connection, nodeId = %u\n", nodeId);
+  Serial.printf("--> startHere: New Connection, nodeId = %u\n", nodeId);
 }
 
 void changedConnectionCallback() {
@@ -64,8 +66,8 @@ void setup() {
   mesh.onChangedConnections(&changedConnectionCallback);
   mesh.onNodeTimeAdjusted(&nodeTimeAdjustedCallback);
 
-  userScheduler.addTask( taskSendMessage );
-  taskSendMessage.enable();
+  userScheduler.addTask( taskPCToMesh );
+  taskPCToMesh.enable();
 }
 
 void loop() {
