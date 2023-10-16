@@ -45,6 +45,12 @@ class Game:
           self._runWelcome()
         case Mode.SCARE:
           self._runScare()
+      
+      # Read messages from serial.
+      incomingMessage = self._connection.readMessage()
+      if incomingMessage != None:
+        pass
+        #print("Incoming message: " + incomingMessage, end="")
   
   # Switch modes if people are approaching or near
   def _checkForPeople(self):

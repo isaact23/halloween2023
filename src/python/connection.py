@@ -30,16 +30,16 @@ class Connection:
   def setMode(self, mode):
     match mode:
       case Mode.IDLE:
-        self._sendMessage("IDLE")
+        self.sendMessage("IDLE")
       case Mode.ATTRACT:
-        self._sendMessage("ATTRACT")
+        self.sendMessage("ATTRACT")
       case Mode.WELCOME:
-        self._sendMessage("WELCOME")
+        self.sendMessage("WELCOME")
       case Mode.SCARE:
-        self._sendMessage("SCARE")
+        self.sendMessage("SCARE")
   
   # Send a string over serial connection.
-  def _sendMessage(self, message):
+  def sendMessage(self, message):
     self._ensureConnected()
 
     binMsg = message.encode('ascii')
@@ -54,7 +54,7 @@ class Connection:
       #print("Connection not initialized. Tried to send " + message)
 
   # Return the next incoming line from serial, or None if there is none.
-  def _readMessage(self):
+  def readMessage(self):
     self._ensureConnected()
 
     if self._connected:
