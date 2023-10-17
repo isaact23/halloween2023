@@ -1,6 +1,7 @@
 // Node 2 - The Nun
 
 #include "painlessMesh.h"
+#include "Skull.hpp"
 
 #define   MESH_PREFIX     "whateverYouLike"
 #define   MESH_PASSWORD   "somethingSneaky"
