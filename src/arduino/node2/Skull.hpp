@@ -1,10 +1,16 @@
 #ifndef SKULL_HPP
 #define SKULL_HPP
 
+#include <Adafruit_PWMServoDriver.h>
+
+#define SERVOMIN  140 // this is the 'minimum' pulse length count (out of 4096)
+#define SERVOMAX  520 // this is the 'maximum' pulse length count (out of 4096)
+#define SERVO_COUNT 12 // number of servos to update each loop
+
 #define L_JAW_OPEN 380
-#define L_JAW_CLOSE 500
+#define L_JAW_CLOSED 500
 #define R_JAW_OPEN 500
-#define R_JAW_CLOSE 380
+#define R_JAW_CLOSED 380
 
 #define L_EYE_UP 240
 #define L_EYE_DOWN 140
@@ -17,9 +23,9 @@
 #define R_EYE_RIGHT 240
 
 #define TOP_EYELID_OPEN 500
-#define TOP_EYELID_CLOSE 250
+#define TOP_EYELID_CLOSED 250
 #define BOTTOM_EYELID_OPEN 250
-#define BOTTOM_EYELID_CLOSE 500
+#define BOTTOM_EYELID_CLOSED 500
 
 #define WIRE_A_LO 500
 #define WIRE_A_HI 150
@@ -30,12 +36,24 @@
 #define WIRE_D_LO 150
 #define WIRE_D_HI 500
 
+struct _eyePos {
+  int horizontal;
+  int vertical;
+}
+typedef struct _eyePos EyePos;
+
 /**
  * The Skull class controlls the servos on the nun.
 */
 class Skull {
 
 public:
+
+  /**
+   * Initialize Skull and PWM.
+  */
+  Skull();
+
   /**
    * Set the jaw servos to a certain percent open.
    * 0.0 is closed, 1.0 is open.
@@ -74,6 +92,11 @@ public:
   */
   void setWireLength(int wire, float value);
 
+  /**
+   * Send servo data to servos.
+  */
+  void updateServos();
+
 private:
 
   /**
@@ -88,6 +111,20 @@ private:
   */
   void _setBottomEyelid(float value);
 
+  // Pulse width modulator
+  Adafruit_PWMServoDriver _pwm;
+
+  // Store current servo values
+  int _l_jaw_curr = L_JAW_CLOSED;
+  int _r_jaw_curr = R_JAW_CLOSED;
+  EyePos _l_eye_curr = { L_EYE_LEFT, L_EYE_UP };
+  EyePos _r_eye_curr = { R_EYE_LEFT, R_EYE_UP };
+  int _top_eyelid_curr = TOP_EYELID_OPEN;
+  int _bottom_eyelid_curr = BOTTOM_EYELID_OPEN;
+  int _wire_a_curr = WIRE_A_LO;
+  int _wire_b_curr = WIRE_B_LO;
+  int _wire_c_curr = WIRE_C_LO;
+  int _wire_d_curr = WIRE_D_LO;
 };
 
 #endif

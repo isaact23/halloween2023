@@ -8,15 +8,12 @@
 #define   MESH_PORT       5555
 
 #include <Wire.h>
-#include <Adafruit_PWMServoDriver.h>
 
-#define SERVOMIN  140 // this is the 'minimum' pulse length count (out of 4096)
-#define SERVOMAX  520 // this is the 'maximum' pulse length count (out of 4096)
-#define SERVOCOUNT 12 // number of servos to update each loop
+
 
 uint8_t servonum = 0; // I'm  not really sure what this does
 
-Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
+Skull skull;
 Scheduler userScheduler; 
 painlessMesh  mesh;
 
@@ -312,10 +309,8 @@ void manual_Calibration() {
 */
 
 //Constantly running - update servos with current values
-void update_Servos() {   
-  for (int i = 0; i < SERVOCOUNT; i++) {
-    pwm.setPWM(i, 0, pwm_val[i]);
-  }
+void update_Servos() {
+  skull.updateServos();
 }
 
 //Idle mode, default state
@@ -343,34 +338,34 @@ void mode_Scare() {
 
 }
 
+// Disable all tasks.
+void disableAllTasks() {
+  task_mode_Approach.disable();
+  task_mode_Attract.disable();
+  task_mode_Scare.disable();
+  task_mode_Idle.disable();
+}
+
 // Log messages received, change mode
 void receivedCallback( uint32_t from, String &msg ) {
   
   Serial.printf("startHere: Received from %u msg=%s\n", from, msg.c_str());
   String new_mode = msg.c_str();
   
-  if (new_mode == "IDLE"){ 
-    task_mode_Approach.disable();
-    task_mode_Attract.disable();
-    task_mode_Scare.disable();
+  if (new_mode == "IDLE") { 
+    disableAllTasks();
     task_mode_Idle.enable();
   }
-  else if (new_mode == "ATTRACT"){
-    task_mode_Approach.disable();
-    task_mode_Scare.disable();
-    task_mode_Idle.disable();
+  else if (new_mode == "ATTRACT") {
+    disableAllTasks();
     task_mode_Attract.enable();
   }
-  else if (new_mode == "SCARE"){
-    task_mode_Approach.disable();
-    task_mode_Idle.disable();
-    task_mode_Attract.disable(); 
+  else if (new_mode == "SCARE") {
+    disableAllTasks();
     task_mode_Scare.enable();
   }
-  else if (new_mode == "WELCOME"){
-    task_mode_Idle.disable();
-    task_mode_Attract.disable(); 
-    task_mode_Scare.disable();   
+  else if (new_mode == "WELCOME") {
+    disableAllTasks();
     task_mode_Approach.enable();  
   }
 }
@@ -399,11 +394,6 @@ void setup() {
   mesh.onChangedConnections(&changedConnectionCallback);
   mesh.onNodeTimeAdjusted(&nodeTimeAdjustedCallback);
 
-  //Initiate PWM module for Servo Control
-  pwm.begin();
-  pwm.setPWMFreq(60);  // Analog servos run at ~60 Hz updates
-  delay(10);
-
   userScheduler.addTask( task_Send_Message );
   userScheduler.addTask( task_mode_Idle );
   userScheduler.addTask( task_mode_Attract );
@@ -416,6 +406,10 @@ void setup() {
   //task_manual_Calibration.enable();
   task_mode_Idle.enable();
   task_Send_Message.enable();
+
+  skull = Skull();
+  skull.setJaw(0.0);
+
 }
 
 void loop() {
