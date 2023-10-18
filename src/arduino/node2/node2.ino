@@ -77,7 +77,7 @@ void mode_Scare() {
  * Set PWM value for a servo.
  */
 void setPWM(int servo, int value) {
-  Serial.printf("Setting servo %i to value %i\n", servo, value);
+  //Serial.printf("Setting servo %i to value %i\n", servo, value);
   pwm.setPWM(servo, 0, value);
 }
 

@@ -92,17 +92,17 @@ void Skull::setWireLength(int wire, float value) {
 */
 void Skull::updateServos() {
 
-  /*this -> _setPWM(1,  this -> _r_eye_curr.horizontal);
+  this -> _setPWM(1,  this -> _r_eye_curr.horizontal);
   this -> _setPWM(2,  this -> _l_eye_curr.vertical);
   this -> _setPWM(3,  this -> _r_eye_curr.vertical);
   this -> _setPWM(4,  this -> _top_eyelid_curr);
-  this -> _setPWM(5,  this -> _bottom_eyelid_curr);*/
+  this -> _setPWM(5,  this -> _bottom_eyelid_curr);
   this -> _setPWM(6,  this -> _l_jaw_curr);
-  /*this -> _setPWM(7,  this -> _r_jaw_curr);
+  this -> _setPWM(7,  this -> _r_jaw_curr);
   this -> _setPWM(8,  this -> _wire_a_curr);
   this -> _setPWM(9,  this -> _wire_b_curr);
   this -> _setPWM(10, this -> _wire_c_curr);
-  this -> _setPWM(11, this -> _wire_d_curr);*/
+  this -> _setPWM(11, this -> _wire_d_curr);
 }
 
 /**
