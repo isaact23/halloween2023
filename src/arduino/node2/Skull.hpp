@@ -2,6 +2,8 @@
 #define SKULL_HPP
 
 #include <Adafruit_PWMServoDriver.h>
+#include <Arduino.h>
+#include <cstdlib>
 
 #define SERVOMIN  140 // this is the 'minimum' pulse length count (out of 4096)
 #define SERVOMAX  520 // this is the 'maximum' pulse length count (out of 4096)
@@ -39,7 +41,7 @@
 struct _eyePos {
   int horizontal;
   int vertical;
-}
+};
 typedef struct _eyePos EyePos;
 
 /**
@@ -50,9 +52,9 @@ class Skull {
 public:
 
   /**
-   * Initialize Skull and PWM.
+  * Initialize Skull with callback to setPWM.
   */
-  Skull();
+  Skull(void (*setPWM) (int servo, int value));
 
   /**
    * Set the jaw servos to a certain percent open.
@@ -111,8 +113,8 @@ private:
   */
   void _setBottomEyelid(float value);
 
-  // Pulse width modulator
-  Adafruit_PWMServoDriver _pwm;
+  // Callback function to update servo values
+  void (*_setPWM) (int servo, int value);
 
   // Store current servo values
   int _l_jaw_curr = L_JAW_CLOSED;

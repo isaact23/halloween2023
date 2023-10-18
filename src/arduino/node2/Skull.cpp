@@ -1,23 +1,32 @@
 #include "Skull.hpp"
 
+uint8_t servonum = SERVO_COUNT;
+
 /**
- * Initialize Skull and PWM.
+ * Linear interpolation
 */
-Skull::Skull() {
+int lerp(float percent, int lo, int hi) {
+  return (percent * hi) + ((1 - percent) * lo);
+}
 
-  this._pwm = Adafruit_PWMServoDriver();
+/**
+ * Initialize Skull with callback to setPWM.
+ */
+Skull::Skull(void (*setPWM) (int servo, int value)) {
 
-  // Initiate PWM module for Servo Control
-  this._pwm.begin();
-  this._pwm.setPWMFreq(60);  // Analog servos run at ~60 Hz updates
+  this -> _setPWM = setPWM;
 }
 
 /**
  * Set the jaw servos to a certain percent open.
  * 0.0 is closed, 1.0 is open.
 */
-void Skull::setJaw(float value) {
-  
+void Skull::setJaw(float percent) {
+
+  this -> _l_jaw_curr = lerp(percent, L_JAW_CLOSED, L_JAW_OPEN);
+  this -> _r_jaw_curr = lerp(percent, R_JAW_CLOSED, R_JAW_OPEN);
+
+  Serial.printf("%i\n", this -> _l_jaw_curr);
 }
 
 /**
@@ -26,6 +35,8 @@ void Skull::setJaw(float value) {
 */
 void Skull::setEyeRot(float x, float y) {
 
+  /*this -> setLeftEyeRot(x, y);
+  this -> setRightEyeRot(x, y);*/
 }
 
 /**
@@ -34,6 +45,13 @@ void Skull::setEyeRot(float x, float y) {
 */
 void Skull::setLeftEyeRot(float x, float y) {
 
+  /*int horizontal = map(x, 0, 1, L_EYE_LEFT, L_EYE_RIGHT);
+  int vertical   = map(y, 0, 1, L_EYE_DOWN, L_EYE_UP);
+
+  this -> _l_eye_curr = {
+    horizontal,
+    vertical
+  };*/
 }
 
 
@@ -41,8 +59,15 @@ void Skull::setLeftEyeRot(float x, float y) {
  * Set right eye rotation.
  * Both values must be between -1.0 and 1.0.
 */
-void Skull::setRightEyeRot(float x, float z) {
+void Skull::setRightEyeRot(float x, float y) {
 
+  /*int horizontal = map(x, 0, 1, R_EYE_LEFT, R_EYE_RIGHT);
+  int vertical   = map(y, 0, 1, R_EYE_DOWN, R_EYE_UP);
+
+  this -> _r_eye_curr = {
+    horizontal,
+    vertical
+  };*/
 }
 
 /**
@@ -67,23 +92,18 @@ void Skull::setWireLength(int wire, float value) {
 */
 void Skull::updateServos() {
 
-  this._pwm.setPWM(0,  0, this._l_eye_curr.horizontal);
-  this._pwm.setPWM(1,  0, this._r_eye_curr.horizontal);
-  this._pwm.setPWM(2,  0, this._l_eye_curr.vertical);
-  this._pwm.setPWM(3,  0, this._r_eye_curr.vertical);
-  this._pwm.setPWM(4,  0, this._top_eyelid_curr);
-  this._pwm.setPWM(5,  0, this._bottom_eyelid_curr);
-  this._pwm.setPWM(6,  0, this._l_jaw_curr);
-  this._pwm.setPWM(7,  0, this._r_jaw_curr);
-  this._pwm.setPWM(8,  0, this._wire_a_curr);
-  this._pwm.setPWM(9,  0, this._wire_b_curr);
-  this._pwm.setPWM(10, 0, this._wire_c_curr);
-  this._pwm.setPWM(11, 0, this._wire_d_curr);
-
-
-  for (int i = 0; i < SERVO_COUNT; i++) {
-    this._pwm.setPWM(i, 0, pwm_val[i]);
-  }
+  this -> _setPWM(6, this -> _l_jaw_curr);
+  /*this -> _setPWM(1,  this -> _r_eye_curr.horizontal);
+  this -> _setPWM(2,  this -> _l_eye_curr.vertical);
+  this -> _setPWM(3,  this -> _r_eye_curr.vertical);
+  this -> _setPWM(4,  this -> _top_eyelid_curr);
+  this -> _setPWM(5,  this -> _bottom_eyelid_curr);
+  this -> _setPWM(6,  this -> _l_jaw_curr);
+  this -> _setPWM(7,  this -> _r_jaw_curr);
+  this -> _setPWM(8,  this -> _wire_a_curr);
+  this -> _setPWM(9,  this -> _wire_b_curr);
+  this -> _setPWM(10, this -> _wire_c_curr);
+  this -> _setPWM(11, this -> _wire_d_curr);*/
 }
 
 /**
