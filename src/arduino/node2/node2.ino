@@ -12,7 +12,7 @@
 Skull skull = NULL;
 Scheduler userScheduler;
 painlessMesh mesh;
-Adafruit_PWMServoDriver pwm;
+Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 
 void send_Message();
 void mode_Idle();
@@ -77,8 +77,8 @@ void mode_Scare() {
  * Set PWM value for a servo.
  */
 void setPWM(int servo, int value) {
-  //Serial.printf("Setting servo %i to value %i\n", servo, value);
-  //pwm.setPWM(servo, 0, value);
+  Serial.printf("Setting servo %i to value %i\n", servo, value);
+  pwm.setPWM(servo, 0, value);
 }
 
 // Disable all tasks.
@@ -136,6 +136,10 @@ void setup() {
   mesh.onNewConnection(&newConnectionCallback);
   mesh.onChangedConnections(&changedConnectionCallback);
   mesh.onNodeTimeAdjusted(&nodeTimeAdjustedCallback);
+
+  //Initiate PWM module for Servo Control
+  pwm.begin();
+  pwm.setPWMFreq(60);  // Analog servos run at ~60 Hz updates
 
   userScheduler.addTask( task_Send_Message );
   userScheduler.addTask( task_mode_Idle );

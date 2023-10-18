@@ -4,6 +4,7 @@
 #include <Adafruit_PWMServoDriver.h>
 #include <Arduino.h>
 #include <cstdlib>
+#include "painlessMesh.h"
 
 #define SERVOMIN  140 // this is the 'minimum' pulse length count (out of 4096)
 #define SERVOMAX  520 // this is the 'maximum' pulse length count (out of 4096)
