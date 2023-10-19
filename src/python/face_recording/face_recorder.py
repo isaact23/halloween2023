@@ -2,6 +2,7 @@
 # https://www.datacamp.com/tutorial/face-detection-python-opencv
 # https://pyimagesearch.com/2017/04/10/detect-eyes-nose-lips-jaw-dlib-opencv-python/
 # https://github.com/davisking/dlib-models
+# https://www.youtube.com/watch?v=kbdbZFT9NQI&t=959s
 
 from collections import OrderedDict
 from imutils import face_utils
@@ -37,60 +38,63 @@ class FaceRecorder:
 
     self.detector = dlib.get_frontal_face_detector()
     self.predictor = dlib.shape_predictor(args["shape_predictor"])
-  
-  # def detectFace(self, frame):
 
-  #   grayImg = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-  #   faces = self.faceClassifier.detectMultiScale(grayImg, 1.1, 5, minSize=(40, 40))
-
-  #   for (x, y, w, h) in faces:
-  #     cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 4)
-
-  #   return faces
-
-  def readFace(self, inputFrame):
-    image = imutils.resize(inputFrame, width=500)
+  def readFace(self, image):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     rects = self.detector(gray, 1)
+    if len(rects) == 0:
+      return None
+    
+    rect = rects[0]
 
-    # loop over the face detections
-    for (i, rect) in enumerate(rects):
+    # determine the facial landmarks for the face region, then
+    # convert the landmark (x, y)-coordinates to a NumPy array
+    shape = self.predictor(gray, rect)
+    shape = face_utils.shape_to_np(shape)
 
-      # determine the facial landmarks for the face region, then
-      # convert the landmark (x, y)-coordinates to a NumPy array
-      shape = self.predictor(gray, rect)
-      shape = face_utils.shape_to_np(shape)
+    # loop over the face parts individually
+    for (name, (i, j)) in face_utils.FACIAL_LANDMARKS_IDXS.items():
 
-      # loop over the face parts individually
-      for (name, (i, j)) in face_utils.FACIAL_LANDMARKS_IDXS.items():
+      # clone the original image so we can draw on it, then
+      # display the name of the face part on the image
+      clone = image.copy()
+      cv2.putText(clone, name, (10, 30), cv2.FONT_HERSHEY_SIMPLEX,
+        0.7, (0, 0, 255), 2)
+      
+      # loop over the subset of facial landmarks, drawing the
+      # specific face part
+      for (x, y) in shape[i:j]:
+        cv2.circle(clone, (x, y), 1, (0, 0, 255), -1)
+      
+      # extract the ROI of the face region as a separate image
+      (x, y, w, h) = cv2.boundingRect(np.array([shape[i:j]]))
+      roi = image[y:y + h, x:x + w]
+      roi = imutils.resize(roi, width=250, inter=cv2.INTER_CUBIC)
 
-        # clone the original image so we can draw on it, then
-        # display the name of the face part on the image
-        clone = image.copy()
-        cv2.putText(clone, name, (10, 30), cv2.FONT_HERSHEY_SIMPLEX,
-          0.7, (0, 0, 255), 2)
-        
-        # loop over the subset of facial landmarks, drawing the
-        # specific face part
-        for (x, y) in shape[i:j]:
-          cv2.circle(clone, (x, y), 1, (0, 0, 255), -1)
-        
-        # extract the ROI of the face region as a separate image
-        (x, y, w, h) = cv2.boundingRect(np.array([shape[i:j]]))
-        print(x, y, w, h)
-        roi = image[y:y + h, x:x + w]
-        roi = imutils.resize(roi, width=250, inter=cv2.INTER_CUBIC)
+      #cv2.imshow("ROI", roi)
+      #cv2.imshow("Image", clone)
+      #cv2.waitKey(0)
 
-        # show the particular face part
+      """if name == "left_eye":
         cv2.imshow("ROI", roi)
-        cv2.imshow("Image", clone)
-        cv2.waitKey(0)
-        
-      # visualize all facial landmarks with a transparent overlay
-      output = face_utils.visualize_facial_landmarks(image, shape)
-      cv2.imshow("Image", output)
-      cv2.waitKey(0)
+        eyeRoi = self.readEye(roi)
 
+        cv2.imshow("Eye ROI", eyeRoi)
+        cv2.imshow("Image", clone)
+        cv2.waitKey(0)"""
+
+      #elif name == "right_eye":
+      #  pass
+
+      # show the particular face part
+        
+    # visualize all facial landmarks with a transparent overlay
+    output = face_utils.visualize_facial_landmarks(image, shape)
+    return output
+  
+  def readEye(self, roi):
+    _, threshold = cv2.threshold(roi, 20, 255, cv2.THRESH_BINARY_INV)
+    return threshold
   
   def record(self):
     videoCapture = cv2.VideoCapture(0)
@@ -101,10 +105,14 @@ class FaceRecorder:
       if result is False:
         print("Video capture failed")
         break
+      
+      frame = imutils.resize(frame, width=500)
 
-      self.readFace(frame)
+      output = self.readFace(frame)
+      if output is None:
+        output = frame
 
-      cv2.imshow("Face Recorder (Halloween 2023)", frame)
+      cv2.imshow("Face Recorder (Halloween 2023)", output)
       
       if (cv2.waitKey(1) & 0xFF == ord("q")):
         print("Quitting program")

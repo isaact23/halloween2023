@@ -9,7 +9,7 @@
       "type": "python",
       "request": "launch",
       "program": "${workspaceFolder}/src/python/face_recording/main.py",
-      "args": "--shape-predictor shape_predictor_68_face_landmarks.dat",
+      "args": "--shape-predictor ${workspaceFolder}/src/python/face_recording/shape_predictor_68_face_landmarks.dat",
       "python": "${workspaceFolder}/env/bin/python3",
       "console": "integratedTerminal",
       "justMyCode": false
