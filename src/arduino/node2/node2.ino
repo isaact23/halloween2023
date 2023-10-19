@@ -54,10 +54,10 @@ void send_Message() {
 void mode_Idle() {
 
   millisElapsed += interval;
-  float jawPos = (sin(millisElapsed / 100) + 1) / 2;
+  float jawPos = (sin(((float) millisElapsed) / 100) + 1) / 2;
   skull.setJaw(jawPos);
 
-  //Serial.printf("Mode idle %.4f \n", jawPos);
+  Serial.printf("%.4f\n", jawPos);
 }
 
 //Attract mode, get the people going
@@ -77,7 +77,7 @@ void mode_Scare() {
  * Set PWM value for a servo.
  */
 void setPWM(int servo, int value) {
-  //Serial.printf("Setting servo %i to value %i\n", servo, value);
+  //Serial.printf("%i\n", value);
   pwm.setPWM(servo, 0, value);
 }
 
