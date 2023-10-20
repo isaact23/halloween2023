@@ -79,6 +79,7 @@ void mode_Approach() {
   float eyeX = cos((millisElapsed / 300f) + 1) / 2;
   float eyeY = sin((millisElapsed / 300f) + 1) / 2;
   skull.setEyeRot(eyeX, eyeY);
+  skull.setEyelids(1.0);
 }
 
 void mode_Scare() {

@@ -17,7 +17,7 @@ class Game:
     print("")
 
     self._connection = Connection()
-    self.setMode(Mode.ATTRACT)
+    self.setMode(Mode.SCARE)
   
   # Set the prorgam mode
   def setMode(self, mode):
