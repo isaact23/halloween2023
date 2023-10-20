@@ -26,7 +26,7 @@ class Game:
     print("Switching to " + str(mode))
 
     self._mode = mode
-    #self._connection.setMode(mode)
+    self._connection.setMode(mode)
     self._modeStartTime = time.time()
 
   # Get the current program mode
@@ -59,6 +59,8 @@ class Game:
 
   # Read the keyboard and switch modes accordingly.
   def _readKeyboard(self):
+    print("", end="")
+
     if keyboard.is_pressed(IDLE_KEY) and self._mode != Mode.IDLE:
       self.setMode(Mode.IDLE)
     elif keyboard.is_pressed(ATTRACT_KEY) and self._mode != Mode.ATTRACT:
