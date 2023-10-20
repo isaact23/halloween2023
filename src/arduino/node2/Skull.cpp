@@ -3,6 +3,13 @@
 uint8_t servonum = SERVO_COUNT;
 
 /**
+ * Linear interpolation
+*/
+int _lerp(float percent, int lo, int hi) {
+  return (percent * hi) + ((1 - percent) * lo);
+}
+
+/**
  * Initialize Skull with callback to setPWM.
  */
 Skull::Skull(void (*setPWM) (int servo, int value)) {
@@ -18,8 +25,8 @@ Skull::Skull(void (*setPWM) (int servo, int value)) {
 */
 void Skull::setJaw(float percent) {
 
-  this -> _l_jaw_curr = map(percent, 0, 1, L_JAW_CLOSED, L_JAW_OPEN);
-  this -> _r_jaw_curr = map(percent, 0, 1, R_JAW_CLOSED, R_JAW_OPEN);
+  this -> _l_jaw_curr = _lerp(percent, L_JAW_CLOSED, L_JAW_OPEN);
+  this -> _r_jaw_curr = _lerp(percent, R_JAW_CLOSED, R_JAW_OPEN);
 }
 
 /**
@@ -38,8 +45,8 @@ void Skull::setEyeRot(float x, float y) {
 */
 void Skull::setLeftEyeRot(float x, float y) {
 
-  int horizontal = map(x, -1, 1, L_EYE_LEFT, L_EYE_RIGHT);
-  int vertical   = map(y, -1, 1, L_EYE_DOWN, L_EYE_UP);
+  int horizontal = _lerp((x + 1) / 2, L_EYE_LEFT, L_EYE_RIGHT);
+  int vertical   = _lerp((y + 1) / 2, L_EYE_DOWN, L_EYE_UP);
 
   this -> _l_eye_curr = {
     horizontal,
@@ -54,8 +61,8 @@ void Skull::setLeftEyeRot(float x, float y) {
 */
 void Skull::setRightEyeRot(float x, float y) {
 
-  int horizontal = map(x, -1, 1, R_EYE_LEFT, R_EYE_RIGHT);
-  int vertical   = map(y, -1, 1, R_EYE_DOWN, R_EYE_UP);
+  int horizontal = _lerp((x + 1) / 2, R_EYE_LEFT, R_EYE_RIGHT);
+  int vertical   = _lerp((y + 1) / 2, R_EYE_DOWN, R_EYE_UP);
 
   this -> _r_eye_curr = {
     horizontal,
@@ -80,19 +87,19 @@ void Skull::setWireLength(int wire, float percent) {
 
   switch (wire) {
     case 0: {
-      this -> _wire_a_curr = map(percent, 0, 1, WIRE_A_LO, WIRE_A_HI);
+      this -> _wire_a_curr = _lerp(percent, WIRE_A_LO, WIRE_A_HI);
       break;
     }
     case 1: {
-      this -> _wire_b_curr = map(percent, 0, 1, WIRE_B_LO, WIRE_B_HI);
+      this -> _wire_b_curr = _lerp(percent, WIRE_B_LO, WIRE_B_HI);
       break;
     }
     case 2: {
-      this -> _wire_c_curr = map(percent, 0, 1, WIRE_C_LO, WIRE_C_HI);
+      this -> _wire_c_curr = _lerp(percent, WIRE_C_LO, WIRE_C_HI);
       break;
     }
     case 3: {
-      this -> _wire_d_curr = map(percent, 0, 1, WIRE_D_LO, WIRE_D_HI);
+      this -> _wire_d_curr = _lerp(percent, WIRE_D_LO, WIRE_D_HI);
       break;
     }
   }
