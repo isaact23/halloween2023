@@ -162,7 +162,7 @@ void setup() {
   //userScheduler.addTask( task_manual_Calibration );
   
   //task_manual_Calibration.enable();
-  task_mode_Idle.enable();
+  task_mode_Scare.enable();
   task_update_servos.enable();
   //task_Send_Message.enable();
 

@@ -15,15 +15,15 @@
 #define R_JAW_OPEN 500
 #define R_JAW_CLOSED 380
 
-#define L_EYE_UP 240
-#define L_EYE_DOWN 140
-#define R_EYE_UP 140
-#define R_EYE_DOWN 240
+#define L_EYE_UP 350
+#define L_EYE_DOWN 150
+#define L_EYE_LEFT 250
+#define L_EYE_RIGHT 150
 
-#define L_EYE_LEFT 140
-#define L_EYE_RIGHT 240
-#define R_EYE_LEFT 140
-#define R_EYE_RIGHT 240
+#define R_EYE_UP 150
+#define R_EYE_DOWN 350
+#define R_EYE_LEFT 250
+#define R_EYE_RIGHT 150
 
 #define TOP_EYELID_OPEN 500
 #define TOP_EYELID_CLOSED 250
