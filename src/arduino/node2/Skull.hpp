@@ -10,9 +10,9 @@
 #define SERVOMAX  520 // this is the 'maximum' pulse length count (out of 4096)
 #define SERVO_COUNT 12 // number of servos to update each loop
 
-#define L_JAW_OPEN 380
+#define L_JAW_OPEN 410
 #define L_JAW_CLOSED 500
-#define R_JAW_OPEN 500
+#define R_JAW_OPEN 470
 #define R_JAW_CLOSED 380
 
 #define L_EYE_UP 350

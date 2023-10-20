@@ -17,7 +17,7 @@ class Game:
     print("")
 
     self._connection = Connection()
-    self.setMode(Mode.IDLE)
+    self.setMode(Mode.ATTRACT)
   
   # Set the prorgam mode
   def setMode(self, mode):
@@ -26,7 +26,7 @@ class Game:
     print("Switching to " + str(mode))
 
     self._mode = mode
-    self._connection.setMode(mode)
+    #self._connection.setMode(mode)
     self._modeStartTime = time.time()
 
   # Get the current program mode
@@ -76,15 +76,15 @@ class Game:
   
   # Switch modes if people are approaching or near
   def _checkForPeople(self):
-    if self.getMode() != Mode.SCARE and self._connection.isPersonClose():
+    if AUTO_CHANGE_MODE and self.getMode() != Mode.SCARE and self._connection.isPersonClose():
       self.setMode(Mode.SCARE)
 
-    elif self.getMode() != Mode.WELCOME and self._connection.isPersonApproaching():
+    elif AUTO_CHANGE_MODE and self.getMode() != Mode.WELCOME and self._connection.isPersonApproaching():
       self.setMode(Mode.WELCOME)
   
   # Run idle mode
   def _runIdle(self):
-    if self.getModeTime() > IDLE_MODE_TIME:
+    if AUTO_CHANGE_MODE and self.getModeTime() > IDLE_MODE_TIME:
       self.setMode(Mode.ATTRACT)
       return
     
@@ -92,7 +92,7 @@ class Game:
   
   # Run attract mode
   def _runAttract(self):
-    if self.getModeTime() > ATTRACT_MODE_TIME:
+    if AUTO_CHANGE_MODE and self.getModeTime() > ATTRACT_MODE_TIME:
       self.setMode(Mode.IDLE)
       return
     
@@ -100,7 +100,7 @@ class Game:
   
   # Run welcome mode
   def _runWelcome(self):
-    if self.getModeTime() > WELCOME_MODE_TIME:
+    if AUTO_CHANGE_MODE and self.getModeTime() > WELCOME_MODE_TIME:
       self.setMode(Mode.ATTRACT)
       return
     
@@ -108,5 +108,5 @@ class Game:
   
   # Run scare mode
   def _runScare(self):
-    if self.getModeTime() > SCARE_MODE_TIME:
+    if AUTO_CHANGE_MODE and self.getModeTime() > SCARE_MODE_TIME:
       self.setMode(Mode.IDLE)

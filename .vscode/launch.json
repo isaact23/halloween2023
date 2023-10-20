@@ -13,6 +13,16 @@
       "python": "${workspaceFolder}/env/bin/python3",
       "console": "integratedTerminal",
       "justMyCode": false
+    },
+    {
+      "name": "Halloween Controller",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/python/controller/main.py",
+      "python": "${workspaceFolder}/env/bin/python3",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "sudo": true
     }
   ]
 }
