@@ -83,7 +83,8 @@ void mode_Approach() {
 }
 
 void mode_Scare() {
-
+  skull.setEyeRot(0, 0);
+  skull.setEyelids(1.0);
 }
 
 /**
