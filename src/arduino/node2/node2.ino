@@ -76,8 +76,8 @@ void mode_Attract() {
 
 void mode_Approach() {
   millisElapsed += interval;
-  float eyeX = cos(((float) millisElapsed / 300) + 1) / 4;
-  float eyeY = sin(((float) millisElapsed / 300) + 1) / 4;
+  float eyeX = cos((float) millisElapsed / 300) / 2;
+  float eyeY = sin((float) millisElapsed / 300) / 2;
   skull.setEyeRot(eyeX, eyeY);
   skull.setEyelids(1.0);
 }
