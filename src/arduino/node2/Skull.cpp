@@ -109,7 +109,7 @@ void Skull::setWireLength(int wire, float percent) {
  * Send servo data to servos.
 */
 void Skull::updateServos() {
-
+  this -> _setPWM(0,  this -> _l_eye_curr.horizontal);
   this -> _setPWM(1,  this -> _r_eye_curr.horizontal);
   this -> _setPWM(2,  this -> _l_eye_curr.vertical);
   this -> _setPWM(3,  this -> _r_eye_curr.vertical);
