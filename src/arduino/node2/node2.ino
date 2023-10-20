@@ -54,19 +54,31 @@ void send_Message() {
 void mode_Idle() {
 
   millisElapsed += interval;
-  float jawPos = (sin(((float) millisElapsed) / 100) + 1) / 2;
-  skull.setJaw(jawPos);
+  float aPos = (sin(((millisElapsed +   0) / 3000f)) + 1) / 2;
+  float bPos = (sin(((millisElapsed + 250) / 3000f)) + 1) / 2;
+  float cPos = (sin(((millisElapsed + 500) / 3000f)) + 1) / 2;
+  float dPos = (sin(((millisElapsed + 750) / 3000f)) + 1) / 2;
 
-  Serial.printf("%.4f\n", jawPos);
+  skull.setWireLength(0, aPos);
+  skull.setWireLength(1, bPos);
+  skull.setWireLength(2, cPos);
+  skull.setWireLength(3, dPos);
 }
 
 //Attract mode, get the people going
 void mode_Attract() {
-  
+
+  millisElapsed += interval;
+  float jawPos = sin((millisElapsed / 100f) + 1) / 2;
+  skull.setJaw(jawPos);
+
 }
 
 void mode_Approach() {
-
+  millisElapsed += interval;
+  float eyeX = cos((millisElapsed / 300f) + 1) / 2;
+  float eyeY = sin((millisElapsed / 300f) + 1) / 2;
+  skull.setEyeRot(eyeX, eyeY);
 }
 
 void mode_Scare() {

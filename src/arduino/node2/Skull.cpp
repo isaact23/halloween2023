@@ -83,8 +83,26 @@ void Skull::setEyelids(float value) {
   * Wire numbers are 0, 1, 2, 3.
   * 0.0 is minimum, 1.0 is maximum.
 */
-void Skull::setWireLength(int wire, float value) {
+void Skull::setWireLength(int wire, float percent) {
 
+  switch (wire) {
+    case 0: {
+      this -> _wire_a_curr = _lerp(percent, WIRE_A_LO, WIRE_A_HI);
+      break;
+    }
+    case 1: {
+      this -> _wire_b_curr = _lerp(percent, WIRE_B_LO, WIRE_B_HI);
+      break;
+    }
+    case 2: {
+      this -> _wire_c_curr = _lerp(percent, WIRE_C_LO, WIRE_C_HI);
+      break;
+    }
+    case 3: {
+      this -> _wire_d_curr = _lerp(percent, WIRE_D_LO, WIRE_D_HI);
+      break;
+    }
+  }
 }
 
 /**

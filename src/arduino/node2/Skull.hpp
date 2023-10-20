@@ -93,7 +93,7 @@ public:
    * Wire numbers are 0, 1, 2, 3.
    * 0.0 is minimum, 1.0 is maximum.
   */
-  void setWireLength(int wire, float value);
+  void setWireLength(int wire, float percent);
 
   /**
    * Send servo data to servos.
