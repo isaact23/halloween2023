@@ -54,10 +54,10 @@ void send_Message() {
 void mode_Idle() {
 
   millisElapsed += interval;
-  float aPos = (sin(((millisElapsed +   0) / 3000f)) + 1) / 2;
-  float bPos = (sin(((millisElapsed + 250) / 3000f)) + 1) / 2;
-  float cPos = (sin(((millisElapsed + 500) / 3000f)) + 1) / 2;
-  float dPos = (sin(((millisElapsed + 750) / 3000f)) + 1) / 2;
+  float aPos = (sin((((float) millisElapsed +   0) / 3000)) + 1) / 2;
+  float bPos = (sin((((float) millisElapsed + 250) / 3000)) + 1) / 2;
+  float cPos = (sin((((float) millisElapsed + 500) / 3000)) + 1) / 2;
+  float dPos = (sin((((float) millisElapsed + 750) / 3000)) + 1) / 2;
 
   skull.setWireLength(0, aPos);
   skull.setWireLength(1, bPos);
@@ -69,15 +69,15 @@ void mode_Idle() {
 void mode_Attract() {
 
   millisElapsed += interval;
-  float jawPos = sin((millisElapsed / 100f) + 1) / 2;
+  float jawPos = sin(((float) millisElapsed / 100) + 1) / 2;
   skull.setJaw(jawPos);
 
 }
 
 void mode_Approach() {
   millisElapsed += interval;
-  float eyeX = cos((millisElapsed / 300f) + 1) / 2;
-  float eyeY = sin((millisElapsed / 300f) + 1) / 2;
+  float eyeX = cos(((float) millisElapsed / 300) + 1) / 2;
+  float eyeY = sin(((float) millisElapsed / 300) + 1) / 2;
   skull.setEyeRot(eyeX, eyeY);
   skull.setEyelids(1.0);
 }
