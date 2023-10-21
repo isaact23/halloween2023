@@ -9,6 +9,11 @@ from imutils import face_utils
 import cv2, dlib, imutils, argparse
 import numpy as np
 
+CROP_LEFT = 300
+CROP_TOP = 100
+CROP_RIGHT = 470
+CROP_BOTTOM = 350
+
 FACIAL_LANDMARKS_IDXS = OrderedDict([
 	("mouth", (48, 68)),
 	("right_eyebrow", (17, 22)),
@@ -97,26 +102,28 @@ class FaceRecorder:
     return threshold
   
   def record(self):
-    videoCapture = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(0)
 
     while True:
 
-      result, frame = videoCapture.read()
+      result, frame = cap.read()
       if result is False:
         print("Video capture failed")
         break
+
+      frame = frame[CROP_TOP:CROP_BOTTOM, CROP_LEFT:CROP_RIGHT]
       
-      frame = imutils.resize(frame, width=500)
+      """frame = imutils.resize(frame, width=500)
 
       output = self.readFace(frame)
       if output is None:
-        output = frame
+        output = frame"""
 
-      cv2.imshow("Face Recorder (Halloween 2023)", output)
+      cv2.imshow("Face Recorder (Halloween 2023)", frame)
       
       if (cv2.waitKey(1) & 0xFF == ord("q")):
         print("Quitting program")
         break
     
-    videoCapture.release()
+    cap.release()
     cv2.destroyAllWindows()
