@@ -45,7 +45,7 @@ class FaceReader:
     leftEye = clone[y:y + h, x:x + w]
     #leftEye = clone[y - MARGIN:y + h + MARGIN, x - MARGIN:x + w + MARGIN]
 
-    blurred = cv2.blur(leftEye, (3, 3))
+    """blurred = cv2.blur(leftEye, (3, 3))
     circles = cv2.HoughCircles(blurred,
       cv2.HOUGH_GRADIENT, 1, 20, param1 = 50, 
       param2 = 30, minRadius = 10, maxRadius = 40) 
@@ -54,7 +54,7 @@ class FaceReader:
       circles = np.uint16(np.around(circles))
       for pt in circles[0, :]:
         a, b, r = pt[0], pt[1], pt[2]
-        cv2.circle(leftEye, (a, b), r, (0, 255, 0), 2)
+        cv2.circle(leftEye, (a, b), r, (0, 255, 0), 2)"""
 
     # visualize all facial landmarks with a transparent overlay
     black = np.zeros(scaled.shape, np.uint8)

@@ -9,7 +9,8 @@
       "type": "python",
       "request": "launch",
       "program": "${workspaceFolder}/src/python/face_recording/main.py",
-      "args": "--shape-predictor ${workspaceFolder}/src/python/face_recording/shape_predictor_68_face_landmarks.dat --video ${workspaceFolder}/src/python/face_recording/recordings/look.mp4",
+      // "args": "--shape-predictor ${workspaceFolder}/src/python/face_recording/shape_predictor_68_face_landmarks.dat --video ${workspaceFolder}/src/python/face_recording/recordings/look.mp4",
+      "args": "--shape-predictor ${workspaceFolder}/src/python/face_recording/shape_predictor_68_face_landmarks.dat --video /dev/video2",
       "python": "${workspaceFolder}/env/bin/python3",
       "console": "integratedTerminal",
       "justMyCode": false

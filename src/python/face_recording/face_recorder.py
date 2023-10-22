@@ -30,12 +30,7 @@ class FaceRecorder:
   def record(self):
 
     # Either use webcam input or read from video depending on parameters
-    cap = None
-    video = self.args.get("video")
-    if video is None:
-      cap = cv2.VideoCapture("/dev/video2")
-    else:
-      cap = cv2.VideoCapture(video)
+    cap = cv2.VideoCapture(self.args.get("video"))
 
     while True:
 
@@ -47,7 +42,6 @@ class FaceRecorder:
       output = self.faceReader.readFace(frame)
       if output is not None:
         cv2.imshow("Facial Landmarks", output["facialLandmarks"])
-        cv2.imshow("Circled Image", output["circledImage"])
         cv2.imshow("Left Eye", output["leftEye"])
         cv2.imshow("Scaled Input", output["scaledInput"])
       

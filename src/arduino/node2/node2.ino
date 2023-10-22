@@ -63,6 +63,10 @@ void mode_Idle() {
   skull.setWireLength(1, bPos);
   skull.setWireLength(2, cPos);
   skull.setWireLength(3, dPos);
+
+  skull.setEyelids(0.0f);
+  skull.setLeftEyeRot(0, 0);
+  skull.setRightEyeRot(0, 0);
 }
 
 //Attract mode, get the people going
