@@ -20,14 +20,22 @@ class FaceRecorder:
     ap = argparse.ArgumentParser()
     ap.add_argument("-p", "--shape-predictor", required=True,
       help="path to facial landmark predictor")
-    args = vars(ap.parse_args())
-    print(args)
+    ap.add_argument("-v", "--video", required=False,
+      help="Input video to analyze")
+    self.args = vars(ap.parse_args())
 
-    self.faceReader = FaceReader(args["shape_predictor"])
+    self.faceReader = FaceReader(self.args["shape_predictor"])
 
   
   def record(self):
-    cap = cv2.VideoCapture(0)
+
+    # Either use webcam input or read from video depending on parameters
+    cap = None
+    video = self.args.get("video")
+    if video is None:
+      cap = cv2.VideoCapture("/dev/video2")
+    else:
+      cap = cv2.VideoCapture(video)
 
     while True:
 
@@ -36,14 +44,12 @@ class FaceRecorder:
         print("Video capture failed")
         break
 
-      #frame = frame[CROP_TOP:CROP_BOTTOM, CROP_LEFT:CROP_RIGHT]
-
       output = self.faceReader.readFace(frame)
       if output is not None:
         cv2.imshow("Face Recorder (Halloween 2023)", output["image"])
         cv2.imshow("Left Eye", output["leftEye"])
-      else:
-        cv2.imshow("Face", frame)
+      
+      cv2.imshow("Face", output["scaledInput"])
       
       if (cv2.waitKey(1) & 0xFF == ord("q")):
         print("Quitting program")

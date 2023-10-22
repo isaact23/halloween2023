@@ -39,19 +39,41 @@ class FaceReader:
     LEFT_EYE_IDXS  = face_utils.FACIAL_LANDMARKS_IDXS.get("left_eye")
     RIGHT_EYE_IDXS = face_utils.FACIAL_LANDMARKS_IDXS.get("right_eye")
 
-    clone = gray.copy()
+    clone = scaled.copy()
     (x, y, w, h) = cv2.boundingRect(np.array([shape[LEFT_EYE_IDXS[0] : LEFT_EYE_IDXS[1]]]))
     leftEye = clone[y:y + h, x:x + w]
-    leftEyeResized = imutils.resize(leftEye, width=250, inter=cv2.INTER_CUBIC)
-    retval, leftEyeThreshold = cv2.threshold(leftEyeResized, 60, 255, cv2.THRESH_BINARY_INV)
-        
+    lower = np.array([0, 50, 0])
+    upper = np.array([255, 255, 255])
+    mask = cv2.inRange(leftEye, lower, upper)
+
+    BORDER_SIZE = 5
+    borderedMask = cv2.copyMakeBorder(mask, top=BORDER_SIZE, bottom=BORDER_SIZE, left=BORDER_SIZE, right=BORDER_SIZE,
+                                      borderType=cv2.BORDER_CONSTANT,
+                                      value=[255, 255, 255])
+
+    # Detect blobs
+    params = cv2.SimpleBlobDetector_Params()
+    params.minThreshold = 0
+    params.maxThreshold = 255
+    params.thresholdStep = 50
+    params.filterByArea = False
+    params.filterByCircularity = False
+    params.filterByConvexity = False
+    params.filterByInertia = False
+    detector = cv2.SimpleBlobDetector_create(params)
+    keypoints = detector.detect(borderedMask)
+    print(keypoints)
+
+    mask = cv2.drawKeypoints(borderedMask, keypoints, np.array([]), (0, 0, 255), cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+
     # visualize all facial landmarks with a transparent overlay
     black = np.zeros(scaled.shape, np.uint8)
     black[:] = (0, 0, 0)
     output = face_utils.visualize_facial_landmarks(black, shape)
     return {
+      "scaledInput": scaled,
       "image": output,
-      "leftEye": leftEyeResized
+      "leftEye": mask
     }
   
   def readEye(self, roi):
