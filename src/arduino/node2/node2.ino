@@ -3,6 +3,8 @@
 #include "painlessMesh.h"
 #include "Skull.hpp"
 
+#define   NODE_NAME       "Node 2 (The Nun)"
+
 #define   MESH_PREFIX     "whateverYouLike"
 #define   MESH_PASSWORD   "somethingSneaky"
 #define   MESH_PORT       5555
@@ -29,6 +31,7 @@ unsigned long millisElapsed = 0UL;
 unsigned long interval = 5UL;
 
 Task task_Send_Message  (interval, TASK_FOREVER, &send_Message);
+Task task_mode_Standby  (interval, TASK_FOREVER, &mode_Standby);
 Task task_mode_Idle     (interval, TASK_FOREVER, &mode_Idle);
 Task task_mode_Attract  (interval, TASK_FOREVER, &mode_Attract);
 Task task_mode_Approach (interval, TASK_FOREVER, &mode_Approach);
@@ -48,6 +51,11 @@ void send_Message() {
   String msg = "The nun says hi";
   mesh.sendBroadcast( msg );
   Serial.println(msg);
+}
+
+// No movement
+void mode_Standby() {
+
 }
 
 //Idle mode, default state
@@ -101,6 +109,7 @@ void setPWM(int servo, int value) {
 
 // Disable all tasks.
 void disableAllTasks() {
+  task_mode_Standby.disable();
   task_mode_Approach.disable();
   task_mode_Attract.disable();
   task_mode_Scare.disable();
@@ -110,29 +119,44 @@ void disableAllTasks() {
 // Log messages received, change mode
 void receivedCallback( uint32_t from, String &msg ) {
   
-  Serial.printf("startHere: Received from %u msg=%s\n", from, msg.c_str());
+  Serial.printf("%s: Received from %u msg=%s\n", NODE_NAME, from, msg.c_str());
   String new_mode = msg.c_str();
   
-  if (new_mode == "IDLE") { 
+  bool didChangeMode = false;
+  if (new_mode == "STANDBY") {
+    disableAllTasks();
+    task_mode_Standby.enable();
+    didChangeMode = true;
+  }
+  else if (new_mode == "IDLE") { 
     disableAllTasks();
     task_mode_Idle.enable();
+    didChangeMode = true;
   }
   else if (new_mode == "ATTRACT") {
     disableAllTasks();
     task_mode_Attract.enable();
+    didChangeMode = true;
   }
   else if (new_mode == "SCARE") {
     disableAllTasks();
     task_mode_Scare.enable();
+    didChangeMode = true;
   }
   else if (new_mode == "WELCOME") {
     disableAllTasks();
     task_mode_Approach.enable();  
+    didChangeMode = true;
   }
+
+  char* broadcast = (char*) malloc(sizeof(char) * 100);
+  sprintf(broadcast, "%s: Mode changed to %s\n", NODE_NAME, new_mode);
+  mesh.sendBroadcast(broadcast);
+  free(broadcast);
 }
 
 void newConnectionCallback(uint32_t nodeId) {
-  Serial.printf("--> startHere: New Connection, nodeId = %u\n", nodeId);
+  Serial.printf("%s: New Connection, nodeId = %u\n", NODE_NAME, nodeId);
 }
 
 void changedConnectionCallback() {
@@ -140,7 +164,7 @@ void changedConnectionCallback() {
 }
 
 void nodeTimeAdjustedCallback(int32_t offset) {
-  Serial.printf("Adjusted time %u. Offset = %d\n", mesh.getNodeTime(),offset);
+  //Serial.printf("Adjusted time %u. Offset = %d\n", mesh.getNodeTime(),offset);
 }
 
 void setup() {
@@ -160,6 +184,7 @@ void setup() {
   pwm.setPWMFreq(60);  // Analog servos run at ~60 Hz updates
 
   userScheduler.addTask( task_Send_Message );
+  userScheduler.addTask( task_mode_Standby );
   userScheduler.addTask( task_mode_Idle );
   userScheduler.addTask( task_mode_Attract );
   userScheduler.addTask( task_mode_Approach );
@@ -168,7 +193,7 @@ void setup() {
   //userScheduler.addTask( task_manual_Calibration );
   
   //task_manual_Calibration.enable();
-  task_mode_Scare.enable();
+  task_mode_Standby.enable();
   task_update_servos.enable();
   //task_Send_Message.enable();
 

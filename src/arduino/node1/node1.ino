@@ -11,6 +11,8 @@
 
 #include "painlessMesh.h"
 
+#define   NODE_NAME       "Node 1 (Messenger)"
+
 #define   MESH_PREFIX     "whateverYouLike"
 #define   MESH_PASSWORD   "somethingSneaky"
 #define   MESH_PORT       5555
@@ -39,11 +41,11 @@ void sendPCToMesh() {
 
 // Needed for painless library
 void receivedCallback( uint32_t from, String &msg ) {
-  Serial.printf("startHere: Received from %u msg=%s\n", from, msg.c_str());
+  Serial.printf("%s: Received from %u msg=%s\n", NODE_NAME, from, msg.c_str());
 }
 
 void newConnectionCallback(uint32_t nodeId) {
-  Serial.printf("--> startHere: New Connection, nodeId = %u\n", nodeId);
+  Serial.printf("%s: New Connection, nodeId = %u\n", NODE_NAME, nodeId);
 }
 
 void changedConnectionCallback() {
@@ -51,7 +53,7 @@ void changedConnectionCallback() {
 }
 
 void nodeTimeAdjustedCallback(int32_t offset) {
-  Serial.printf("Adjusted time %u. Offset = %d\n", mesh.getNodeTime(),offset);
+  //Serial.printf("Adjusted time %u. Offset = %d\n", mesh.getNodeTime(),offset);
 }
 
 void setup() {

@@ -116,7 +116,7 @@ private:
   int _wire_b_curr = WIRE_B_LO;
   int _wire_c_curr = WIRE_C_LO;
   int _wire_d_curr = WIRE_D_LO;
-  float _eyelid_space = 1f;
+  float _eyelid_space = 1.0;
 };
 
 #endif

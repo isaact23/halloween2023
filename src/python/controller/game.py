@@ -17,7 +17,7 @@ class Game:
     print("")
 
     self._connection = Connection()
-    self.setMode(Mode.SCARE)
+    self.setMode(Mode.STANDBY)
   
   # Set the prorgam mode
   def setMode(self, mode):
@@ -46,8 +46,10 @@ class Game:
       self._readFromSerial()
   
   # Run loop code specific to a mode
-  def _runMode(mode):
-    match mode:
+  def _runMode(self):
+    match self._mode:
+      case Mode.STANDBY:
+        self._runStandby()
       case Mode.IDLE:
         self._runIdle()
       case Mode.ATTRACT:
@@ -61,6 +63,8 @@ class Game:
   def _readKeyboard(self):
     print("", end="")
 
+    if keyboard.is_pressed(STANDBY_KEY) and self._mode != Mode.STANDBY:
+      self.setMode(Mode.STANDBY)
     if keyboard.is_pressed(IDLE_KEY) and self._mode != Mode.IDLE:
       self.setMode(Mode.IDLE)
     elif keyboard.is_pressed(ATTRACT_KEY) and self._mode != Mode.ATTRACT:
@@ -84,6 +88,10 @@ class Game:
     elif AUTO_CHANGE_MODE and self.getMode() != Mode.WELCOME and self._connection.isPersonApproaching():
       self.setMode(Mode.WELCOME)
   
+  # Run standby mode
+  def _runStandby(self):
+    pass
+
   # Run idle mode
   def _runIdle(self):
     if AUTO_CHANGE_MODE and self.getModeTime() > IDLE_MODE_TIME:

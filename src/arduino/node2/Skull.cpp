@@ -5,8 +5,8 @@ uint8_t servonum = SERVO_COUNT;
 /**
  * Linear interpolation
 */
-int _lerp(float percent, int lo, int hi) {
-  return (percent * hi) + ((1 - percent) * lo);
+int _lerp(float percent, float lo, float hi) {
+  return map(percent, 0, 1.0, lo, hi);
 }
 
 /**
@@ -54,13 +54,13 @@ void Skull::setEyeRot(float x, float y) {
   */
 
   // Calculate how open/closed the top/bottom eyes should be
-  float topVal = _lerp(y, -1, 1, 0, 1);
-  float bottomVal = _lerp(y, -1, 1, 1, 0);
-  topVal *= this._eyelid_space;
-  bottomVal *= this._eyelid_space;
+  float topVal = map(y, -1, 1, 0, 1);
+  float bottomVal = map(y, -1, 1, 1, 0);
+  topVal *= this -> _eyelid_space;
+  bottomVal *= this -> _eyelid_space;
 
-  this -> _top_eyelid_curr = _lerp(top_val, 0, 1.0, TOP_EYELID_CLOSED, TOP_EYELID_OPEN);
-  this -> _bottom_eyelid_curr = _lerp(bottom_val, 0, 1.0, BOTTOM_EYELID_CLOSED, BOTTOM_EYELID_OPEN);
+  this -> _top_eyelid_curr = _lerp(topVal, TOP_EYELID_CLOSED, TOP_EYELID_OPEN);
+  this -> _bottom_eyelid_curr = _lerp(bottomVal, BOTTOM_EYELID_CLOSED, BOTTOM_EYELID_OPEN);
 }
 
 /**
@@ -99,7 +99,7 @@ void Skull::setRightEyeRot(float x, float y) {
  * 0.0 is closed, 1.0 is open.
 */
 void Skull::setEyelids(float value) {
-  this._eyelid_space = value;
+  this -> _eyelid_space = value;
 }
 
 /**

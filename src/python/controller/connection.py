@@ -29,6 +29,8 @@ class Connection:
   # Update the mode across all systems.
   def setMode(self, mode):
     match mode:
+      case Mode.STANDBY:
+        self.sendMessage("STANDBY")
       case Mode.IDLE:
         self.sendMessage("IDLE")
       case Mode.ATTRACT:
@@ -62,12 +64,14 @@ class Connection:
         if self._port.in_waiting > 0:
           return self._port.readline().decode("Ascii")
 
-      except serial.serialutil.SerialException:
+      except serial.serialutil.SerialException as e:
         print("Failed to read message from serial. Disconnected.")
+        print(e)
         self._connected = False
       
-      except UnicodeDecodeError:
+      except UnicodeDecodeError as e:
         print("Failed to decode message from serial.")
+        print(e)
 
     else:
       #print("Connection not initialized. Cannot read message.")
