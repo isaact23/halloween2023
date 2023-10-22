@@ -46,10 +46,10 @@ class FaceRecorder:
 
       output = self.faceReader.readFace(frame)
       if output is not None:
-        cv2.imshow("Face Recorder (Halloween 2023)", output["image"])
+        cv2.imshow("Facial Landmarks", output["facialLandmarks"])
+        cv2.imshow("Circled Image", output["circledImage"])
         cv2.imshow("Left Eye", output["leftEye"])
-      
-      cv2.imshow("Face", output["scaledInput"])
+        cv2.imshow("Scaled Input", output["scaledInput"])
       
       if (cv2.waitKey(1) & 0xFF == ord("q")):
         print("Quitting program")

@@ -41,39 +41,29 @@ class FaceReader:
 
     clone = scaled.copy()
     (x, y, w, h) = cv2.boundingRect(np.array([shape[LEFT_EYE_IDXS[0] : LEFT_EYE_IDXS[1]]]))
+    MARGIN = 10
     leftEye = clone[y:y + h, x:x + w]
-    lower = np.array([0, 50, 0])
-    upper = np.array([255, 255, 255])
-    mask = cv2.inRange(leftEye, lower, upper)
+    #leftEye = clone[y - MARGIN:y + h + MARGIN, x - MARGIN:x + w + MARGIN]
 
-    BORDER_SIZE = 5
-    borderedMask = cv2.copyMakeBorder(mask, top=BORDER_SIZE, bottom=BORDER_SIZE, left=BORDER_SIZE, right=BORDER_SIZE,
-                                      borderType=cv2.BORDER_CONSTANT,
-                                      value=[255, 255, 255])
-
-    # Detect blobs
-    params = cv2.SimpleBlobDetector_Params()
-    params.minThreshold = 0
-    params.maxThreshold = 255
-    params.thresholdStep = 50
-    params.filterByArea = False
-    params.filterByCircularity = False
-    params.filterByConvexity = False
-    params.filterByInertia = False
-    detector = cv2.SimpleBlobDetector_create(params)
-    keypoints = detector.detect(borderedMask)
-    print(keypoints)
-
-    mask = cv2.drawKeypoints(borderedMask, keypoints, np.array([]), (0, 0, 255), cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+    blurred = cv2.blur(leftEye, (3, 3))
+    circles = cv2.HoughCircles(blurred,
+      cv2.HOUGH_GRADIENT, 1, 20, param1 = 50, 
+      param2 = 30, minRadius = 10, maxRadius = 40) 
+    
+    if circles is not None:
+      circles = np.uint16(np.around(circles))
+      for pt in circles[0, :]:
+        a, b, r = pt[0], pt[1], pt[2]
+        cv2.circle(leftEye, (a, b), r, (0, 255, 0), 2)
 
     # visualize all facial landmarks with a transparent overlay
     black = np.zeros(scaled.shape, np.uint8)
     black[:] = (0, 0, 0)
-    output = face_utils.visualize_facial_landmarks(black, shape)
+    facialLandmarks = face_utils.visualize_facial_landmarks(black, shape)
     return {
       "scaledInput": scaled,
-      "image": output,
-      "leftEye": mask
+      "facialLandmarks": facialLandmarks,
+      "leftEye": leftEye
     }
   
   def readEye(self, roi):
