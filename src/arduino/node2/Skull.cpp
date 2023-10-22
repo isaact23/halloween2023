@@ -37,6 +37,30 @@ void Skull::setEyeRot(float x, float y) {
 
   this -> setLeftEyeRot(x, y);
   this -> setRightEyeRot(x, y);
+
+  /*
+  this._eyelid_space 0.0 to 1.0
+  y -1.0 to 1.0
+  TOP_EYELID_CLOSED to TOP_EYE_OPEN
+  BOTTOM_EYELID_CLOSED to BOTTOM_EYELID_OPEN
+
+  eyelid_space       y           top_val           bottom_val
+  0                 -1            0                   0
+  0                 0             0                   0
+  0                 1             0                   0
+  1                 -1            0                   1
+  1                 0             0.5                   0.5
+  1                 1             1                   0
+  */
+
+  // Calculate how open/closed the top/bottom eyes should be
+  float topVal = _lerp(y, -1, 1, 0, 1);
+  float bottomVal = _lerp(y, -1, 1, 1, 0);
+  topVal *= this._eyelid_space;
+  bottomVal *= this._eyelid_space;
+
+  this -> _top_eyelid_curr = _lerp(top_val, 0, 1.0, TOP_EYELID_CLOSED, TOP_EYELID_OPEN);
+  this -> _bottom_eyelid_curr = _lerp(bottom_val, 0, 1.0, BOTTOM_EYELID_CLOSED, BOTTOM_EYELID_OPEN);
 }
 
 /**
@@ -75,7 +99,7 @@ void Skull::setRightEyeRot(float x, float y) {
  * 0.0 is closed, 1.0 is open.
 */
 void Skull::setEyelids(float value) {
-
+  this._eyelid_space = value;
 }
 
 /**
@@ -121,20 +145,4 @@ void Skull::updateServos() {
   this -> _setPWM(9,  this -> _wire_b_curr);
   this -> _setPWM(10, this -> _wire_c_curr);
   this -> _setPWM(11, this -> _wire_d_curr);
-}
-
-/**
- * Set top eyelid position.
- * 0.0 is down, 1.0 is up.
-*/
-void Skull::_setTopEyelid(float value) {
-
-}
-
-/**
-  * Set bottom eyelid position.
-  * 0.0 is up, 1.0 is down.
-*/
-void Skull::_setBottomEyelid(float value) {
-
 }

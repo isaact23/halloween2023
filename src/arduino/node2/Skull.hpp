@@ -102,18 +102,6 @@ public:
 
 private:
 
-  /**
-   * Set top eyelid position.
-   * 0.0 is down, 1.0 is up.
-  */
-  void _setTopEyelid(float value);
-
-  /**
-    * Set bottom eyelid position.
-    * 0.0 is up, 1.0 is down.
-  */
-  void _setBottomEyelid(float value);
-
   // Callback function to update servo values
   void (*_setPWM) (int servo, int value);
 
@@ -128,6 +116,7 @@ private:
   int _wire_b_curr = WIRE_B_LO;
   int _wire_c_curr = WIRE_C_LO;
   int _wire_d_curr = WIRE_D_LO;
+  float _eyelid_space = 1f;
 };
 
 #endif
