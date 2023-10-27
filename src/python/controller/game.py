@@ -1,5 +1,6 @@
 # User modules
 from modes import Mode
+from audio import AudioPlayer
 from connection import Connection
 from settings import *
 
@@ -11,12 +12,13 @@ import keyboard, os, time
 class Game:
 
   # Initialize the control program
-  def __init__(self):
+  def __init__(self, args):
 
     print("Initializing Halloween 2023 program!")
     print("")
 
     self._connection = Connection()
+    self._audioPlayer = AudioPlayer(args.audioDir)
     self.setMode(Mode.STANDBY)
   
   # Set the prorgam mode
@@ -27,6 +29,7 @@ class Game:
 
     self._mode = mode
     self._connection.setMode(mode)
+    self._audioPlayer.setMode(mode)
     self._modeStartTime = time.time()
 
   # Get the current program mode

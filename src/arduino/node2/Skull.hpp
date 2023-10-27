@@ -10,10 +10,10 @@
 #define SERVOMAX  520 // this is the 'maximum' pulse length count (out of 4096)
 #define SERVO_COUNT 12 // number of servos to update each loop
 
-#define L_JAW_OPEN 410
-#define L_JAW_CLOSED 500
-#define R_JAW_OPEN 470
-#define R_JAW_CLOSED 380
+#define L_JAW_OPEN 500
+#define L_JAW_CLOSED 380
+#define R_JAW_OPEN 380
+#define R_JAW_CLOSED 500
 
 #define L_EYE_UP 350
 #define L_EYE_DOWN 150
@@ -26,18 +26,18 @@
 #define R_EYE_RIGHT 150
 
 #define TOP_EYELID_OPEN 500
-#define TOP_EYELID_CLOSED 250
+#define TOP_EYELID_CLOSED 260
 #define BOTTOM_EYELID_OPEN 500
-#define BOTTOM_EYELID_CLOSED 250
+#define BOTTOM_EYELID_CLOSED 290
 
-#define WIRE_A_LO 500
+#define WIRE_A_LO 600
 #define WIRE_A_HI 150
 #define WIRE_B_LO 150
-#define WIRE_B_HI 500
-#define WIRE_C_LO 500
+#define WIRE_B_HI 600
+#define WIRE_C_LO 600
 #define WIRE_C_HI 150
 #define WIRE_D_LO 150
-#define WIRE_D_HI 500
+#define WIRE_D_HI 600
 
 struct _eyePos {
   int horizontal;

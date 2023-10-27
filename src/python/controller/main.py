@@ -1,5 +1,15 @@
 from game import Game
-import os
+import argparse, os
+
+def get_args():
+  parser = argparse.ArgumentParser(
+    prog="Halloween 2023",
+    description="Python controller for Halloween 2023 project"
+  )
+  parser.add_argument('-a', '--audioDir')
+  
+  args = parser.parse_args()
+  return args
 
 def main():
   # Ensure root
@@ -7,7 +17,8 @@ def main():
     print("You must run this program as root.")
     return
 
-  game = Game()
+  args = get_args()
+  game = Game(args)
   game.run()
 
 if __name__ == "__main__":

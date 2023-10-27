@@ -58,52 +58,123 @@ void mode_Standby() {
 
 }
 
-//Idle mode, default state
+// Idle mode, default state
 void mode_Idle() {
 
+  // Jiggle slow
   millisElapsed += interval;
-  float aPos = (sin((((float) millisElapsed +   0) / 3000)) + 1) / 2;
-  float bPos = (sin((((float) millisElapsed + 250) / 3000)) + 1) / 2;
-  float cPos = (sin((((float) millisElapsed + 500) / 3000)) + 1) / 2;
-  float dPos = (sin((((float) millisElapsed + 750) / 3000)) + 1) / 2;
+  float leftPos = (sin((((float) millisElapsed) / 300)) + 1) / 2;
+  float rightPos = -leftPos;
 
-  skull.setWireLength(0, aPos);
-  skull.setWireLength(1, bPos);
-  skull.setWireLength(2, cPos);
-  skull.setWireLength(3, dPos);
+  skull.setWireLength(0, leftPos);
+  skull.setWireLength(1, rightPos);
+  skull.setWireLength(2, rightPos);
+  skull.setWireLength(3, leftPos);
 
-  skull.setEyelids(0.0f);
+  skull.setEyelids(0.0);
   skull.setLeftEyeRot(0, 0);
   skull.setRightEyeRot(0, 0);
+
+  skull.setJaw(0);
+
+  //Serial.printf("%0.4f\n", aPos);
 }
 
-//Attract mode, get the people going
+// Attract mode, get the people going
 void mode_Attract() {
 
+  // Jiggle fast
   millisElapsed += interval;
-  float jawPos = sin(((float) millisElapsed / 100) + 1) / 2;
-  skull.setJaw(jawPos);
+  float leftPos = (sin((((float) millisElapsed) / 30)) + 1) / 2;
+  float rightPos = -leftPos;
 
+  skull.setWireLength(0, leftPos);
+  skull.setWireLength(1, rightPos);
+  skull.setWireLength(2, rightPos);
+  skull.setWireLength(3, leftPos);
+
+  float eyePos = sin(((float) millisElapsed) / 200);
+  skull.setEyelids(1.0f);
+  skull.setLeftEyeRot(eyePos, 0);
+  skull.setRightEyeRot(eyePos, 0);
+
+  skull.setJaw((eyePos + 1) / 2);
 }
 
 void mode_Approach() {
   millisElapsed += interval;
-  float eyeX = cos((float) millisElapsed / 300);
-  float eyeY = sin((float) millisElapsed / 300);
-  skull.setEyeRot(eyeX, eyeY);
-  skull.setEyelids(1.0);
+
+  // Lean forward
+  skull.setWireLength(0, 0.0);
+  skull.setWireLength(1, 0.0);
+  skull.setWireLength(2, 1.0);
+  skull.setWireLength(3, 1.0);
+
+  float wave1 = sin(((float) millisElapsed) / 140);
+  float wave2 = cos(((float) millisElapsed) / 175);
+  float wave3 = -sin(((float) millisElapsed) / 133);
+  float wave4 = -cos(((float) millisElapsed) / 206);
+
+  int BLINK_INTERVAL = 2000;
+
+  int modulo = millisElapsed % BLINK_INTERVAL;
+  
+  if (modulo < 100 || (modulo > 200 && modulo < 300)) {
+    skull.setEyelids(0.0);
+  } else {
+    skull.setEyelids(1.0);
+  }
+
+  skull.setLeftEyeRot(wave1, wave2);
+  skull.setRightEyeRot(wave3, wave4);
+
+  float jawVal = (round(sin(millisElapsed / 300) * 2) + 2) / 4;
+  skull.setJaw(jawVal);
 }
 
 void mode_Scare() {
-  skull.setEyeRot(0, 0);
-  skull.setEyelids(1.0);
+
+  millisElapsed += interval;
+
+  if (millisElapsed < 3000) {
+    skull.setEyelids(0.7);
+    if (((millisElapsed / 400) % 2) == 0) {
+      skull.setEyeRot(-1, 0);
+    } else {
+      skull.setEyeRot(1, 0);
+    }
+    skull.setJaw(0);
+  }
+  else {
+    // Jiggle fast
+    millisElapsed += interval;
+    float leftPos = (sin((((float) millisElapsed) / 50)) + 1) / 2;
+    float rightPos = -(sin((((float) millisElapsed) / 56)) + 1) / 2;
+
+    skull.setWireLength(0, leftPos);
+    skull.setWireLength(1, rightPos);
+    skull.setWireLength(2, rightPos);
+    skull.setWireLength(3, leftPos);
+
+    skull.setEyelids(1.0);
+    float x = cos(((float) millisElapsed) / 70);
+    float y = sin(((float) millisElapsed) / 70);
+    skull.setEyeRot(x, y);
+
+    skull.setJaw(1);
+  }
 }
 
 /**
  * Set PWM value for a servo.
  */
 void setPWM(int servo, int value) {
-  //Serial.printf("%i\n", value);
+  /*if (servo > 10) {
+    Serial.printf("Set %i to %i", servo, value);
+  }
+  else if (servo > 7) {
+    Serial.printf("Set %i to %i\n", servo, value);
+  }*/
   pwm.setPWM(servo, 0, value);
 }
 
@@ -114,6 +185,8 @@ void disableAllTasks() {
   task_mode_Attract.disable();
   task_mode_Scare.disable();
   task_mode_Idle.disable();
+
+  millisElapsed = 0;
 }
 
 // Log messages received, change mode

@@ -21,6 +21,7 @@
       "request": "launch",
       "program": "${workspaceFolder}/src/python/controller/main.py",
       "python": "${workspaceFolder}/env/bin/python3",
+      "args": "--audioDir ${workspaceFolder}/audio",
       "console": "integratedTerminal",
       "justMyCode": false,
       "sudo": true
