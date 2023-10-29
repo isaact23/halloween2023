@@ -2,6 +2,7 @@
 
 #include "painlessMesh.h"
 #include "Skull.hpp"
+#include <Wire.h>
 
 #define   NODE_NAME       "Node 2 (The Nun)"
 
@@ -9,14 +10,13 @@
 #define   MESH_PASSWORD   "somethingSneaky"
 #define   MESH_PORT       5555
 
-#include <Wire.h>
-
 Skull skull = NULL;
 Scheduler userScheduler;
 painlessMesh mesh;
 Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 
 void send_Message();
+void mode_Standby();
 void mode_Idle();
 void mode_Attract(); 
 void mode_Approach();
@@ -28,14 +28,14 @@ void setPWM(int servo, int value);
 
 //update frequency counter
 unsigned long millisElapsed = 0UL;
-unsigned long interval = 5UL;
+unsigned long const INTERVAL = 5UL;
 
-Task task_Send_Message  (interval, TASK_FOREVER, &send_Message);
-Task task_mode_Standby  (interval, TASK_FOREVER, &mode_Standby);
-Task task_mode_Idle     (interval, TASK_FOREVER, &mode_Idle);
-Task task_mode_Attract  (interval, TASK_FOREVER, &mode_Attract);
-Task task_mode_Approach (interval, TASK_FOREVER, &mode_Approach);
-Task task_mode_Scare    (interval, TASK_FOREVER, &mode_Scare);
+Task task_Send_Message  (INTERVAL, TASK_FOREVER, &send_Message);
+Task task_mode_Standby  (INTERVAL, TASK_FOREVER, &mode_Standby);
+Task task_mode_Idle     (INTERVAL, TASK_FOREVER, &mode_Idle);
+Task task_mode_Attract  (INTERVAL, TASK_FOREVER, &mode_Attract);
+Task task_mode_Approach (INTERVAL, TASK_FOREVER, &mode_Approach);
+Task task_mode_Scare    (INTERVAL, TASK_FOREVER, &mode_Scare);
 
 Task task_update_servos (5, TASK_FOREVER, &update_Servos);
 
@@ -62,7 +62,7 @@ void mode_Standby() {
 void mode_Idle() {
 
   // Jiggle slow
-  millisElapsed += interval;
+  millisElapsed += INTERVAL;
   float leftPos = (sin((((float) millisElapsed) / 300)) + 1) / 2;
   float rightPos = -leftPos;
 
@@ -84,7 +84,7 @@ void mode_Idle() {
 void mode_Attract() {
 
   // Jiggle fast
-  millisElapsed += interval;
+  millisElapsed += INTERVAL;
   float leftPos = (sin((((float) millisElapsed) / 30)) + 1) / 2;
   float rightPos = -leftPos;
 
@@ -102,7 +102,7 @@ void mode_Attract() {
 }
 
 void mode_Approach() {
-  millisElapsed += interval;
+  millisElapsed += INTERVAL;
 
   // Lean forward
   skull.setWireLength(0, 0.0);
@@ -134,7 +134,7 @@ void mode_Approach() {
 
 void mode_Scare() {
 
-  millisElapsed += interval;
+  millisElapsed += INTERVAL;
 
   if (millisElapsed < 3000) {
     skull.setEyelids(0.7);
@@ -147,7 +147,7 @@ void mode_Scare() {
   }
   else {
     // Jiggle fast
-    millisElapsed += interval;
+    millisElapsed += INTERVAL;
     float leftPos = (sin((((float) millisElapsed) / 50)) + 1) / 2;
     float rightPos = -(sin((((float) millisElapsed) / 56)) + 1) / 2;
 

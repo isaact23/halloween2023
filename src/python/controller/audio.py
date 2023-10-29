@@ -1,12 +1,13 @@
-import os, multiprocessing
+import os
 from modes import Mode
-from playsound import playsound
+from pygame import mixer
 
 class AudioPlayer:
 
   def __init__(self, audioDir):
     self._audioDir = audioDir
-    self._audioProcess = None
+    mixer.init(44100, -16, 1, 1024)
+    mixer.music.set_volume(1)
 
   def setMode(self, mode):
     match mode:
@@ -25,26 +26,29 @@ class AudioPlayer:
     self._stopAudio()
   
   def _idle(self):
-    self._stopAudio()
+    self._playMusic("Graveyard.mp3")
 
   def _attract(self):
-    self._playAudio("Right Behind You.mp3")
+    self._playMusic("Right Behind You.mp3")
   
   def _welcome(self):
     self._stopAudio()
 
   def _scare(self):
-    self._playAudio("Flowey.mp3")
+    self._playMusic("Flowey.mp3")
 
   def _stopAudio(self):
-    if self._audioProcess is not None:
-      self._audioProcess.terminate()
-      self._audioProcess = None
+    mixer.stop()
+    mixer.music.stop()
   
   def _getAudioPath(self, audio):
     return os.path.join(self._audioDir, audio)
   
-  def _playAudio(self, audio):
-    self._stopAudio()
-    self._audioProcess = multiprocessing.Process(target=playsound, args=(self._getAudioPath(audio),))
-    self._audioProcess.start()
+  def _playSound(self, sound):
+    path = self._getAudioPath(sound)
+    mixer.Sound(path).play()
+
+  def _playMusic(self, music):
+    path = self._getAudioPath(music)
+    mixer.music.load(path)
+    mixer.music.play(-1)
