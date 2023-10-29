@@ -1,8 +1,8 @@
 // Node 3 - LEDs
 
+#include "painlessMesh.h"
 #include <FastLED.h>
 #include <math.h>
-//#include "painlessMesh.h"
 
 #define PIN 19
 #define NUM_LEDS 100
@@ -23,22 +23,18 @@ void setup() {
 }
 
 void loop() {
+
 }
 
 // Run the SONUS light program.
 void program() {
+  
   Serial.begin(9600);
 
   FastLED.addLeds<WS2812B, PIN>(leds, NUM_LEDS);
 
-  for (int i = 0; i < 20; i++) {
-    leds[i].setRGB(120, 0, 0);
-  }
-  for (int i = 20; i < 40; i++) {
-    leds[i].setRGB(0, 120, 0);
-  }
-  for (int i = 40; i < 60; i++) {
-    leds[i].setRGB(0, 0, 120);
+  for (int i = 0; i < NUM_LEDS; i++) {
+    leds[i].setRGB(120, 120, 0);
   }
 
   FastLED.show();
