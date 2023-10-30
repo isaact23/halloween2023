@@ -47,11 +47,15 @@ void send_Message() {
 
 // No movement
 void mode_Standby() {
-
+  for (int i = 0; i < NUM_LEDS; i++) {
+    leds[i].setRGB(0, 0, 0);
+  }
 }
 
 // Idle mode, default state
 void mode_Idle() {
+  millisElapsed += interval;
+
   for (int i = 0; i < NUM_LEDS; i++) {
     leds[i].setRGB(0, 120, 0);
   }
@@ -61,6 +65,8 @@ void mode_Idle() {
 
 // Attract mode, get the people going
 void mode_Attract() {
+  millisElapsed += interval;
+
   for (int i = 0; i < NUM_LEDS; i++) {
     leds[i].setRGB(0, 0, 120);
   }
@@ -69,6 +75,8 @@ void mode_Attract() {
 }
 
 void mode_Approach() {
+  millisElapsed += interval;
+
   for (int i = 0; i < NUM_LEDS; i++) {
     leds[i].setRGB(120, 120, 0);
   }
@@ -77,6 +85,8 @@ void mode_Approach() {
 }
 
 void mode_Scare() {
+  millisElapsed += interval;
+
   for (int i = 0; i < NUM_LEDS; i++) {
     leds[i].setRGB(120, 120, 120);
   }
