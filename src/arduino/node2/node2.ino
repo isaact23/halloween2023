@@ -147,7 +147,6 @@ void mode_Scare() {
   }
   else {
     // Jiggle fast
-    millisElapsed += INTERVAL;
     float leftPos = (sin((((float) millisElapsed) / 50)) + 1) / 2;
     float rightPos = -(sin((((float) millisElapsed) / 56)) + 1) / 2;
 
