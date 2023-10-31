@@ -32,7 +32,7 @@ class AudioPlayer:
     self._playMusic("Right Behind You.mp3")
   
   def _welcome(self):
-    self._stopAudio()
+    self._playMusic("Graveyard.mp3")
 
   def _scare(self):
     self._playMusic("Flowey.mp3")

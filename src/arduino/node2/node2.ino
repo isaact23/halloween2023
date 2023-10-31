@@ -37,7 +37,7 @@ Task task_mode_Attract  (INTERVAL, TASK_FOREVER, &mode_Attract);
 Task task_mode_Approach (INTERVAL, TASK_FOREVER, &mode_Approach);
 Task task_mode_Scare    (INTERVAL, TASK_FOREVER, &mode_Scare);
 
-Task task_update_servos (5, TASK_FOREVER, &update_Servos);
+Task task_update_servos (INTERVAL, TASK_FOREVER, &update_Servos);
 
 //Task task_manual_Calibration (1000, TASK_FOREVER, &manual_Calibration);
 //Task task_move_Eyes (100, TASK_FOREVER, &move_Eyes);
@@ -136,7 +136,7 @@ void mode_Scare() {
 
   millisElapsed += INTERVAL;
 
-  if (millisElapsed < 3000) {
+  if (millisElapsed < 2000) {
     skull.setEyelids(0.7);
     if (((millisElapsed / 400) % 2) == 0) {
       skull.setEyeRot(-1, 0);
@@ -168,12 +168,6 @@ void mode_Scare() {
  * Set PWM value for a servo.
  */
 void setPWM(int servo, int value) {
-  /*if (servo > 10) {
-    Serial.printf("Set %i to %i", servo, value);
-  }
-  else if (servo > 7) {
-    Serial.printf("Set %i to %i\n", servo, value);
-  }*/
   pwm.setPWM(servo, 0, value);
 }
 
