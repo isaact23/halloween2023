@@ -46,7 +46,7 @@ void send_Message() {
 
 // No movement
 void mode_Standby() {
-  millisElapsed += interval;
+  millisElapsed += INTERVAL;
 
   for (int i = 0; i < NUM_LEDS; i++) {
     leds[i] = CRGB::Black;
@@ -56,7 +56,7 @@ void mode_Standby() {
 
 // Idle mode, default state
 void mode_Idle() {
-  millisElapsed += interval;
+  millisElapsed += INTERVAL;
 
   const float FREQ = 0.1;
   const float SPEED = 0.1;
@@ -82,7 +82,7 @@ void mode_Idle() {
 
 // Attract mode, get the people going
 void mode_Attract() {
-  millisElapsed += interval;
+  millisElapsed += INTERVAL;
 
   const float FREQ = 0.1;
   const float SPEED = 0.1;
@@ -115,7 +115,10 @@ void mode_Attract() {
 }
 
 void mode_Approach() {
-  millisElapsed += interval;
+  millisElapsed += INTERVAL;
+
+  const float FREQ = 0.1;
+  const float SPEED = 0.1;
 
   for (int i = 0; i < NUM_LEDS; i++) {
 
@@ -144,7 +147,7 @@ void mode_Approach() {
 }
 
 void mode_Scare() {
-  millisElapsed += interval;
+  millisElapsed += INTERVAL;
 
   for (int i = 0; i < NUM_LEDS; i++) {
 
