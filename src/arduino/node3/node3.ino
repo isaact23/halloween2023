@@ -5,7 +5,7 @@
 #include <math.h>
 #include <Wire.h>
 
-#define PIN 19
+#define LED_PIN 19
 #define NUM_LEDS 100
 
 #define   NODE_NAME       "Node 3 (The Lights)"
@@ -59,7 +59,7 @@ void mode_Idle() {
   millisElapsed += INTERVAL;
 
   const float FREQ = 0.1;
-  const float SPEED = 0.1;
+  const float SPEED = 0.005;
 
   for (int i = 0; i < NUM_LEDS; i++) {
 
@@ -85,7 +85,7 @@ void mode_Attract() {
   millisElapsed += INTERVAL;
 
   const float FREQ = 0.1;
-  const float SPEED = 0.1;
+  const float SPEED = 0.005;
 
   for (int i = 0; i < NUM_LEDS; i++) {
 
@@ -118,7 +118,7 @@ void mode_Approach() {
   millisElapsed += INTERVAL;
 
   const float FREQ = 0.1;
-  const float SPEED = 0.1;
+  const float SPEED = 0.005;
 
   for (int i = 0; i < NUM_LEDS; i++) {
 
@@ -163,8 +163,8 @@ void mode_Scare() {
       j = NUM_LEDS - i;
     }
 
-    const int STRIPE_WIDTH = 30;
-    const int STRIPE_SPEED = 0.1;
+    const int STRIPE_WIDTH = 8;
+    const float STRIPE_SPEED = 0.1;
 
     int offset = millisElapsed * STRIPE_SPEED;
     int segment = ((j + offset) / STRIPE_WIDTH) % 8;
@@ -219,10 +219,12 @@ void receivedCallback( uint32_t from, String &msg ) {
     didChangeMode = true;
   }
 
-  char* broadcast = (char*) malloc(sizeof(char) * 100);
-  sprintf(broadcast, "%s: Mode changed to %s\n", NODE_NAME, new_mode);
-  mesh.sendBroadcast(broadcast);
-  free(broadcast);
+  if (didChangeMode) {
+    char* broadcast = (char*) malloc(sizeof(char) * 100);
+    sprintf(broadcast, "%s: Mode changed to %s\n", NODE_NAME, new_mode);
+    mesh.sendBroadcast(broadcast);
+    free(broadcast);
+  }
 }
 
 void newConnectionCallback(uint32_t nodeId) {

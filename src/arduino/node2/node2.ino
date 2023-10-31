@@ -222,10 +222,12 @@ void receivedCallback( uint32_t from, String &msg ) {
     didChangeMode = true;
   }
 
-  char* broadcast = (char*) malloc(sizeof(char) * 100);
-  sprintf(broadcast, "%s: Mode changed to %s\n", NODE_NAME, new_mode);
-  mesh.sendBroadcast(broadcast);
-  free(broadcast);
+  if (didChangeMode) {
+    char* broadcast = (char*) malloc(sizeof(char) * 100);
+    sprintf(broadcast, "%s: Mode changed to %s\n", NODE_NAME, new_mode);
+    mesh.sendBroadcast(broadcast);
+    free(broadcast);
+  }
 }
 
 void newConnectionCallback(uint32_t nodeId) {
