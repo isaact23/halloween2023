@@ -174,3 +174,31 @@ void mode_Scare() {
   }
   FastLED.show();
 }
+
+void setup() {
+  Serial.begin(115200);
+
+//mesh.setDebugMsgTypes( ERROR | MESH_STATUS | CONNECTION | SYNC | COMMUNICATION | GENERAL | MSG_TYPES | REMOTE ); // all types on
+  mesh.setDebugMsgTypes( ERROR | STARTUP );  // set before init() so that you can see startup messages
+
+  mesh.init( MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT );
+  mesh.onReceive(&receivedCallback);
+  mesh.onNewConnection(&newConnectionCallback);
+  mesh.onChangedConnections(&changedConnectionCallback);
+  mesh.onNodeTimeAdjusted(&nodeTimeAdjustedCallback);
+
+  FastLED.addLeds<WS2812B, LED_PIN>(leds, NUM_LEDS);
+
+  userScheduler.addTask( task_Send_Message );
+  userScheduler.addTask( task_mode_Standby );
+  userScheduler.addTask( task_mode_Idle );
+  userScheduler.addTask( task_mode_Attract );
+  userScheduler.addTask( task_mode_Approach );
+  userScheduler.addTask( task_mode_Scare );
+
+  task_mode_Standby.enable();
+}
+
+void loop() {
+  mesh.update();
+}
