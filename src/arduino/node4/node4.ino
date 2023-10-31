@@ -60,7 +60,6 @@ void mode_Idle() {
     leds[i].setRGB(0, 120, 0);
   }
   FastLED.show();
-  pinMode(EYE_PIN, INPUT);
 }
 
 // Attract mode, get the people going
@@ -71,7 +70,6 @@ void mode_Attract() {
     leds[i].setRGB(0, 0, 120);
   }
   FastLED.show();
-  pinMode(EYE_PIN, OUTPUT);
 }
 
 void mode_Approach() {
@@ -80,8 +78,7 @@ void mode_Approach() {
   for (int i = 0; i < NUM_LEDS; i++) {
     leds[i].setRGB(120, 120, 0);
   }
-  FastLED.show(); 
-  pinMode(EYE_PIN, INPUT); 
+  FastLED.show();
 }
 
 void mode_Scare() {
@@ -91,7 +88,6 @@ void mode_Scare() {
     leds[i].setRGB(120, 120, 120);
   }
   FastLED.show();
-  pinMode(EYE_PIN, OUTPUT);
 }
 
 // Disable all tasks.
