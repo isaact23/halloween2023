@@ -175,6 +175,68 @@ void mode_Scare() {
   FastLED.show();
 }
 
+// Disable all tasks.
+void disableAllTasks() {
+  task_mode_Standby.disable();
+  task_mode_Approach.disable();
+  task_mode_Attract.disable();
+  task_mode_Scare.disable();
+  task_mode_Idle.disable();
+
+  millisElapsed = 0;
+}
+
+// Log messages received, change mode
+void receivedCallback( uint32_t from, String &msg ) {
+  
+  Serial.printf("%s: Received from %u msg=%s\n", NODE_NAME, from, msg.c_str());
+  String new_mode = msg.c_str();
+  
+  bool didChangeMode = false;
+  if (new_mode == "STANDBY") {
+    disableAllTasks();
+    task_mode_Standby.enable();
+    didChangeMode = true;
+  }
+  else if (new_mode == "IDLE") { 
+    disableAllTasks();
+    task_mode_Idle.enable();
+    didChangeMode = true;
+  }
+  else if (new_mode == "ATTRACT") {
+    disableAllTasks();
+    task_mode_Attract.enable();
+    didChangeMode = true;
+  }
+  else if (new_mode == "SCARE") {
+    disableAllTasks();
+    task_mode_Scare.enable();
+    didChangeMode = true;
+  }
+  else if (new_mode == "WELCOME") {
+    disableAllTasks();
+    task_mode_Approach.enable();  
+    didChangeMode = true;
+  }
+
+  char* broadcast = (char*) malloc(sizeof(char) * 100);
+  sprintf(broadcast, "%s: Mode changed to %s\n", NODE_NAME, new_mode);
+  mesh.sendBroadcast(broadcast);
+  free(broadcast);
+}
+
+void newConnectionCallback(uint32_t nodeId) {
+  Serial.printf("%s: New Connection, nodeId = %u\n", NODE_NAME, nodeId);
+}
+
+void changedConnectionCallback() {
+  Serial.printf("Changed connections\n");
+}
+
+void nodeTimeAdjustedCallback(int32_t offset) {
+  //Serial.printf("Adjusted time %u. Offset = %d\n", mesh.getNodeTime(),offset);
+}
+
 void setup() {
   Serial.begin(115200);
 
